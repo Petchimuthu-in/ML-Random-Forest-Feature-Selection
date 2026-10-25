@@ -1,0 +1,33 @@
+
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+
+df = pd.read_csv("student_results_feature_selection.csv")
+print(df)
+
+result_counts = df["Result"].value_counts()
+probabilities = result_counts / len(df)
+
+gini_impurity = 1 - (probabilities ** 2).sum()
+
+print("Result Counts:")
+print(result_counts)
+
+print("Gini Impurity:", round(gini_impurity, 2))
+
+X = df[["Study_Hours", "Attendance", "Assignments_Completed"]]
+y = df["Result"]
+
+model = RandomForestClassifier(
+    n_estimators=5,
+    max_features=2,
+    criterion="gini",
+    random_state=42
+)
+
+model.fit(X, y)
+
+print("Model trained successfully!")
+print("Total Features:", X.shape[1])
+print("Features Considered per Split:", model.max_features)
+print("Gini Criterion:", model.criterion)
